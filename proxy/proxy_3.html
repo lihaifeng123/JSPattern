@@ -1,0 +1,45 @@
+<!--X域中被代理页面A-->
+<srcipt type='text/JavaScript'>
+
+    function callback(data){
+        console.log(data);
+    }
+</script>
+<iframe name="proxyIframe" id='proxyIframe' src=''>
+</iframe>
+<form action="http://localhost/test/proxy.php" method="post" target="proxyIframe">
+    <input type='text' name='callback' value='callback'>
+    <input type='text' name='proxy' value='http://localhost:8080/proxy.html'>
+    <input type='submit' value='提交'/>
+</form>
+
+<!--X域中解析页面B-->
+<srcipt type='text/JavaScript'>
+// 页面加载后执行
+window.onload=function(){
+    //  如果不在A页面中返回，不执行
+    if(top==self)return;
+    //  获取并解析searchBar中的数据
+    var arr=location.search.substr(1).split('&'),
+        fn,args;
+    for(var i=0,len=arr.length,item;i<len;i++){
+        item=arr[i].split('=');
+        if(item[0]=='callback'){
+            // 设置回调函数
+            fn=item[i];
+        }else if(item[0]=='arg'){
+            //设置参数
+            args=item[1];
+        }
+    }
+    try{
+        eval('top.'+fn+'("'+args+'")');
+    }catche(e){}
+}
+</script>
+//  Y域接口C
+<?php
+    $proxy=$_POST["proxy"];
+    $callback=$_POST['callback'];
+    header('Location:'.$proxy."?callback=".$callback."&arg=success");
+?>

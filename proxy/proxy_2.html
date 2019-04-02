@@ -1,0 +1,13 @@
+<srcipt type='text/JavaScript'>
+    function jsonpCallback(res,req){
+        console.log(res,req);
+    }
+</script>
+
+<srcipt type='text/JavaScript' src='http://localhost/test/jsonp.php?callback=jsonpCallback&&data=getJsonData'></script>
+//  另一个域下服务器请求接口
+<?php
+    $dadta=$_GET["data"];
+    $callback=$_GET['callback'];
+    ECHO $callback."('success','".$data."')"
+?>
