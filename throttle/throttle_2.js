@@ -17,7 +17,7 @@ var Layer=function(id){
     //  获取二维码
     this.imgs=$tag('img',this.container);
     //  绑定事件
-    this.bindEvent();
+    this.bindEvent(); 
 }
 
 Layer.prototype={

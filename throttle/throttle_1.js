@@ -17,7 +17,7 @@ var throttle=function(){
         var p=extend({
             context:null,   //执行函数执行时的作用域
             args:[],//  执行函数执行时的相关参数(IE下要为数组)
-            time:300//  执行函数延迟的时间
+            time:300//  执行函数延迟的时间 
         },param);
         //  去除函数执行计时器句柄
         arguments.callee(true,fn);
