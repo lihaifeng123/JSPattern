@@ -11,7 +11,7 @@ var throttle=function(){
     }else{
         //  第一次参数为函数
         fn=isclear;
-        //  第二个参数为函数执行时的参数
+        //  第二个参数为函数执行时的参数 
         param=arguments[1];
         //  对执行时的参数适配默认值，这里我们用到以前的extend方法
         var p=extend({
