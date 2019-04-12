@@ -11,13 +11,13 @@ var throttle=function(){
     }else{
         //  第一次参数为函数
         fn=isclear;
-        //  第二个参数为函数执行时的参数 
+        //  第二个参数为函数执行时的参数
         param=arguments[1];
         //  对执行时的参数适配默认值，这里我们用到以前的extend方法
         var p=extend({
             context:null,   //执行函数执行时的作用域
-            args:[],//  执行函数执行时的相关参数(IE下要为数组) 
-            time:300//  执行函数延迟的时间 
+            args:[],//  执行函数执行时的相关参数(IE下要为数组)
+            time:300//  执行函数延迟的时间
         },param);
         //  去除函数执行计时器句柄
         arguments.callee(true,fn);

@@ -17,7 +17,7 @@ var Layer=function(id){
     //  获取二维码
     this.imgs=$tag('img',this.container);
     //  绑定事件
-    this.bindEvent(); 
+    this.bindEvent();
 }
 
 Layer.prototype={
@@ -72,3 +72,105 @@ Layer.prototype={
         return this;
     }
 }
+
+/**
+ * 节流延迟加载图片
+ * @param {*} id 
+ */
+function LazyLoad(id){
+    //  获取需要加载的图片容器
+    this.container=document.getElementById(id);
+    //  缓存图片
+    this.imgs=this.getImgs();
+    //  执行逻辑
+    this.init();
+}
+//  节流延迟加载图片方法
+LazyLoad.prototype={
+    //  启始逻辑
+    init:function(){
+        this.update();
+        this.bindEvent();
+    },
+    //  获取延迟加载图片
+    getImgs:function(){
+        //  新数组容器
+        var arr=[];
+        //  获取图片
+        var imgs=this.container.getImgs();
+
+        //  把获取的图片转到数组
+        for(var i=0,len=imgs.length;i<len;i++){
+            arr.push(imgs[i]);
+        }
+        return arr;
+    },
+    //  加载图片
+    update:function(){
+        //  如果图片都加载完成，返回
+        if(!this.imgs.length){
+            return;
+        }
+        //  获取图片长度
+        var i=this.imgs.length;
+        //  遍历图片
+        for(--i;i>=0;i--){
+            //  如果图片在可视化范围内
+            if(this.shouldShow(i)){
+                //  加载图片
+                this.imgs[i].src=this.imgs[i].getAttribute('data-src');
+                //  清除缓存的图片
+                this.imgs.splice(i,1);
+            }
+        }
+    },
+    //  判断图片是否在可视化区域内
+    shouldShow:function(i){
+        var img=this.img[i],
+            //  可视范围内顶部高度
+            scrollTop=document.documentElement.scrollTop||document.body.scrollTop,
+            //  可视范围内底部
+            scrollBottom=scrollTop+document.documentElement.clientHeight,
+            //  图片的顶部位置
+            imgTop=this.pageY(img),
+            //  图片的底部位置
+            imgBottom=imgTop+img.offsetHeight;
+            //  判断图片是否在可视范围内
+            if(imgBottom>scrollTop&&imgBottom<scrollBottom||(imgTop>scrollTop&&imgTop<scrollBottom)){
+                return true;
+            }
+            return false;
+    },
+    //  获取元素页面的纵坐标
+    pageY:function(element){
+        //  如果元素有父元素
+        if(element.offsetParent){
+            //  返回元素+父元素高度
+            return element.offsetTop+this.pageY(element.offsetParent);
+        }else{
+            return element.offsetTop;
+        }
+    },
+    //  绑定事件
+    on:function(element,type,fn){
+        if(element.addEventListener){
+            addEventListener(type,fn,false);
+        }else{
+            element.attachEvent('on'+type,fn,false);
+        }
+    },
+    //  为窗口绑定resize和scroll
+    bindEvent:function(){
+        var that=this;
+        this.on(window,'resize',function(){
+            //  节流处理更新图片逻辑
+            throttle(that.update,{context:that});
+        });
+        this.on(window,'scroll',function(){
+            throttle(that.update,{context:that});
+        })
+    }
+}
+
+//  延迟加载图片
+new LazyLoad('container');
